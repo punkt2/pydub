@@ -801,6 +801,9 @@ class AudioSegment(object):
         if close_file:
             file.close()
 
+        print("Memory after conversion")
+        print_memory_usage()
+
         if start_second is None and duration is None:
             return obj
         elif start_second is not None and duration is None:
