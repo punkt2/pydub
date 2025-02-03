@@ -17,6 +17,9 @@ setup(
     url='http://pydub.com',
     packages=['pydub'],
     long_description=__doc__,
+    install_requires=[
+      'psutil'
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: OSI Approved :: MIT License',

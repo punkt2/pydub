@@ -48,6 +48,19 @@ if sys.version_info >= (3, 0):
     StringIO = BytesIO
 
 
+
+import psutil
+
+def get_memory_usage():
+    process = psutil.Process(os.getpid())
+    mem_info = process.memory_info()
+    return mem_info.rss  # Resident Set Size (RSS) in bytes
+
+def print_memory_usage():
+    memory_usage = get_memory_usage()
+    print(f"Memory usage: {memory_usage / (1024 * 1024):.2f} MB")
+
+
 class ClassPropertyDescriptor(object):
 
     def __init__(self, fget, fset=None):
@@ -631,6 +644,9 @@ class AudioSegment(object):
             os.unlink(input_file.name)
             os.unlink(output.name)
 
+        print("Memory after conversion")
+        print_memory_usage()
+
         if start_second is None and duration is None:
             return obj
         elif start_second is not None and duration is None:
@@ -773,6 +789,9 @@ class AudioSegment(object):
             raise CouldntDecodeError(
                 "Decoding failed. ffmpeg returned error code: {0}\n\nOutput from ffmpeg/avlib:\n\n{1}".format(
                     p.returncode, p_err.decode(errors='ignore') ))
+
+        print("Memory after decoding")
+        print_memory_usage()
 
         p_out = bytearray(p_out)
         fix_wav_headers(p_out)
