@@ -11,6 +11,9 @@ from .logging_utils import log_conversion, log_subprocess_output
 from .utils import mediainfo_json, fsdecode
 import base64
 from collections import namedtuple
+import gc
+import ctypes
+import sys
 
 try:
     from StringIO import StringIO
@@ -794,7 +797,27 @@ class AudioSegment(object):
                 "Decoding failed. ffmpeg returned error code: {0}\n\nOutput from ffmpeg/avlib:\n\n{1}".format(
                     p.returncode, p_err.decode(errors='ignore') ))
 
-        print("Memory after decoding")
+
+        print("Memory before release memory")
+        print_memory_usage()
+
+        '''
+        p.stdout.close()
+        p.stderr.close()
+        p.terminate()
+        p.wait()
+        del p, p_err
+        gc.collect()
+        '''
+
+        del p
+
+        if sys.platform == 'linux':
+            print("malloc_trim")
+            libc = ctypes.CDLL("libc.so.6")
+            libc.malloc_trim(0)
+
+        print("Memory after release memory")
         print_memory_usage()
 
         p_out = bytearray(p_out)
