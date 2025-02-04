@@ -628,6 +628,8 @@ class AudioSegment(object):
         with open(os.devnull, 'rb') as devnull:
             p = subprocess.Popen(conversion_command, stdin=devnull, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p_out, p_err = p.communicate()
+ 
+        print("p_out", len(p_out) / 1024 / 1024, "MB")
 
         log_subprocess_output(p_out)
         log_subprocess_output(p_err)
@@ -782,6 +784,8 @@ class AudioSegment(object):
         p = subprocess.Popen(conversion_command, stdin=stdin_parameter,
                              stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         p_out, p_err = p.communicate(input=stdin_data)
+
+        print("p_out", len(p_out) / 1024 / 1024, "MB")
 
         if p.returncode != 0 or len(p_out) == 0:
             if close_file:
